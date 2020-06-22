@@ -36,13 +36,6 @@ extern "C" {
 
 typedef struct stepmotor *stepmotor_handle_t;
 
-typedef enum {
-	STEPMOTOR_READY = 0,
-	STEPMOTOR_RUNNING,
-	STEPMOTOR_STOP,
-	STEPMOTOR_ERROR
-} stepmotor_status_t;
-
 typedef struct {
 	gpio_port_t         dir_gpio_port;          /*!< Pin dir GPIO Port */
 	gpio_num_t          dir_gpio_num;           /*!< Pin dir GPIO Num */

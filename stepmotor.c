@@ -34,7 +34,6 @@ typedef struct stepmotor {
     bool                dir;                    /*!< Direction */
     uint32_t            freq_hz;                /*!< PWM frequency in Hz */
     uint8_t             duty;                   /*!< PWM duty cycle in % */
-    stepmotor_status_t  status;                 /*!< Step motor status */
     SemaphoreHandle_t   lock;                   /*!< Step motor mutex */
 } stepmotor_t;
 
@@ -73,7 +72,6 @@ stepmotor_handle_t stepmotor_config(stepmotor_config_t *config)
     handle->dir = 0;
     handle->freq_hz = 0;
     handle->duty = 50;
-    handle->status = STEPMOTOR_READY;
     handle->lock = mutex_create();
 
     return handle;
@@ -93,7 +91,6 @@ stm_err_t stepmotor_set_dir(stepmotor_handle_t handle, bool dir)
 
     handle->dir = dir;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
 
@@ -111,7 +108,6 @@ stm_err_t stepmotor_toggle_dir(stepmotor_handle_t handle)
 
     handle->dir = !handle->dir;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
 
@@ -129,7 +125,6 @@ stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz)
 
     handle->freq_hz = freq_hz;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
 
@@ -147,7 +142,6 @@ stm_err_t stepmotor_set_pwm_duty(stepmotor_handle_t handle, uint8_t duty)
 
     handle->duty = duty;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
 
@@ -163,9 +157,7 @@ stm_err_t stepmotor_start(stepmotor_handle_t handle)
         return STM_FAIL;
     }
 
-    handle->status = STEPMOTOR_RUNNING;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
 
@@ -181,8 +173,6 @@ stm_err_t stepmotor_stop(stepmotor_handle_t handle)
         return STM_FAIL;
     }
 
-    handle->status = STEPMOTOR_STOP;
     mutex_unlock(handle->lock);
-
     return STM_OK;
 }
