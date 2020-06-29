@@ -114,10 +114,16 @@ stm_err_t stepmotor_toggle_dir(stepmotor_handle_t handle)
 stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz)
 {
     mutex_lock(handle->lock);
-
     int ret;
-    ret = pwm_set_params(handle->pulse_timer_num, handle->pulse_timer_chnl, freq_hz, handle->duty);
 
+    ret = pwm_set_frequency(handle->pulse_timer_num, handle->pulse_timer_chnl, freq_hz);
+    if (ret) {
+        STM_LOGE(STEPMOTOR_TAG, STEPMOTOR_SET_PWM_FREQ_ERR_STR);
+        mutex_unlock(handle->lock);
+        return STM_FAIL;
+    }
+
+    ret = pwm_set_duty(handle->pulse_timer_num, handle->pulse_timer_chnl, handle->duty);
     if (ret) {
         STM_LOGE(STEPMOTOR_TAG, STEPMOTOR_SET_PWM_FREQ_ERR_STR);
         mutex_unlock(handle->lock);
