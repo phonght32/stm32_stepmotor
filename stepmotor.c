@@ -61,7 +61,7 @@ stepmotor_handle_t stepmotor_config(stepmotor_config_t *config)
     pulse_cfg.timer_pins_pack = config->pulse_timer_pins_pack;
     pulse_cfg.timer_chnl = config->pulse_timer_chnl;
     STEPMOTOR_CHECK(!pwm_config(&pulse_cfg), STEPMOTOR_INIT_ERR_STR, NULL);
-    STEPMOTOR_CHECK(!pwm_set_params(config->pulse_timer_num, config->pulse_timer_chnl, 0, 0), STEPMOTOR_INIT_ERR_STR, NULL);
+    STEPMOTOR_CHECK(!pwm_set_params(config->pulse_timer_num, config->pulse_timer_chnl, 0, 50), STEPMOTOR_INIT_ERR_STR, NULL);
 
     /* Update handle structure */
     handle->dir_gpio_port = config->dir_gpio_port;
@@ -116,7 +116,8 @@ stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz)
     mutex_lock(handle->lock);
 
     int ret;
-    ret = pwm_set_params(handle->pulse_timer_num, handle->pulse_timer_chnl, handle->freq_hz, handle->duty);
+    ret = pwm_set_params(handle->pulse_timer_num, handle->pulse_timer_chnl, freq_hz, handle->duty);
+
     if (ret) {
         STM_LOGE(STEPMOTOR_TAG, STEPMOTOR_SET_PWM_FREQ_ERR_STR);
         mutex_unlock(handle->lock);
