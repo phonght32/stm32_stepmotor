@@ -20,9 +20,9 @@
 #define mutex_destroy(x)                        vQueueDelete(x)
 
 static const char* STEPMOTOR_TAG = "STEP MOTOR";
-#define STEPMOTOR_CHECK(a, str, ret)  if(!(a)) {                                            \
+#define STEPMOTOR_CHECK(a, str, action)  if(!(a)) {                                         \
         STM_LOGE(STEPMOTOR_TAG,"%s:%d (%s):%s", __FILE__, __LINE__, __FUNCTION__, str);     \
-        return (ret);                                                                       \
+        action;                                                                       \
         }
 
 typedef struct stepmotor {
@@ -37,14 +37,18 @@ typedef struct stepmotor {
     SemaphoreHandle_t   lock;                   /*!< Step motor mutex */
 } stepmotor_t;
 
+void _step_motor_cleanup(stepmotor_handle_t handle) {
+    free(handle);
+}
+
 stepmotor_handle_t stepmotor_config(stepmotor_config_t *config)
 {
     /* Check input conditions */
-    STEPMOTOR_CHECK(config, STEPMOTOR_INIT_ERR_STR, NULL);
+    STEPMOTOR_CHECK(config, STEPMOTOR_INIT_ERR_STR, return NULL);
 
     /* Allocate memory for handle structure */
     stepmotor_handle_t handle = calloc(1, sizeof(stepmotor_t));
-    STEPMOTOR_CHECK(handle, STEPMOTOR_INIT_ERR_STR, NULL);
+    STEPMOTOR_CHECK(handle, STEPMOTOR_INIT_ERR_STR, return NULL);
 
     /* Configure pin direction */
     gpio_cfg_t dir_cfg;
@@ -52,16 +56,16 @@ stepmotor_handle_t stepmotor_config(stepmotor_config_t *config)
     dir_cfg.gpio_num = config->dir_gpio_num;
     dir_cfg.mode = GPIO_OUTPUT_PP;
     dir_cfg.reg_pull_mode = GPIO_REG_PULL_NONE;
-    STEPMOTOR_CHECK(!gpio_config(&dir_cfg), STEPMOTOR_INIT_ERR_STR, NULL);
-    STEPMOTOR_CHECK(!gpio_set_level(config->dir_gpio_port, config->dir_gpio_num, 0), STEPMOTOR_INIT_ERR_STR, NULL);
+    STEPMOTOR_CHECK(!gpio_config(&dir_cfg), STEPMOTOR_INIT_ERR_STR, {_step_motor_cleanup(handle); return NULL;});
+    STEPMOTOR_CHECK(!gpio_set_level(config->dir_gpio_port, config->dir_gpio_num, 0), STEPMOTOR_INIT_ERR_STR, {_step_motor_cleanup(handle); return NULL;});
 
     /* Configure pin pulse */
     pwm_cfg_t pulse_cfg;
     pulse_cfg.timer_num = config->pulse_timer_num;
     pulse_cfg.timer_pins_pack = config->pulse_timer_pins_pack;
     pulse_cfg.timer_chnl = config->pulse_timer_chnl;
-    STEPMOTOR_CHECK(!pwm_config(&pulse_cfg), STEPMOTOR_INIT_ERR_STR, NULL);
-    STEPMOTOR_CHECK(!pwm_set_params(config->pulse_timer_num, config->pulse_timer_chnl, 0, 50), STEPMOTOR_INIT_ERR_STR, NULL);
+    STEPMOTOR_CHECK(!pwm_config(&pulse_cfg), STEPMOTOR_INIT_ERR_STR, {_step_motor_cleanup(handle); return NULL;});
+    STEPMOTOR_CHECK(!pwm_set_params(config->pulse_timer_num, config->pulse_timer_chnl, 0, 50), STEPMOTOR_INIT_ERR_STR, {_step_motor_cleanup(handle); return NULL;});
 
     /* Update handle structure */
     handle->dir_gpio_port = config->dir_gpio_port;
