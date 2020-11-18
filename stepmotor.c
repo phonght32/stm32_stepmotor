@@ -83,6 +83,8 @@ stepmotor_handle_t stepmotor_config(stepmotor_config_t *config)
 
 stm_err_t stepmotor_set_dir(stepmotor_handle_t handle, bool dir)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_SET_DIR_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
 
     int ret;
@@ -100,6 +102,8 @@ stm_err_t stepmotor_set_dir(stepmotor_handle_t handle, bool dir)
 
 stm_err_t stepmotor_toggle_dir(stepmotor_handle_t handle)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_TOGGLE_DIR_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
 
     int ret;
@@ -117,6 +121,8 @@ stm_err_t stepmotor_toggle_dir(stepmotor_handle_t handle)
 
 stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_SET_PWM_FREQ_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
     int ret;
 
@@ -141,6 +147,8 @@ stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz)
 
 stm_err_t stepmotor_set_pwm_duty(stepmotor_handle_t handle, uint8_t duty)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_SET_PWM_DUTYCYCLE_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
 
     int ret;
@@ -158,6 +166,8 @@ stm_err_t stepmotor_set_pwm_duty(stepmotor_handle_t handle, uint8_t duty)
 
 stm_err_t stepmotor_start(stepmotor_handle_t handle)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_START_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
 
     int ret;
@@ -174,6 +184,8 @@ stm_err_t stepmotor_start(stepmotor_handle_t handle)
 
 stm_err_t stepmotor_stop(stepmotor_handle_t handle)
 {
+    STEPMOTOR_CHECK(handle, STEPMOTOR_STOP_ERR_STR, return STM_ERR_INVALID_ARG);
+
     mutex_lock(handle->lock);
 
     int ret;
