@@ -199,3 +199,8 @@ stm_err_t stepmotor_stop(stepmotor_handle_t handle)
     mutex_unlock(handle->lock);
     return STM_OK;
 }
+
+void stepmotor_destroy(stepmotor_handle_t handle)
+{
+    free(handle);
+}

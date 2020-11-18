@@ -57,6 +57,7 @@ stepmotor_handle_t stepmotor_config(stepmotor_config_t *config);
  * @brief   Set step motor direction.
  * @param   handle Handle structure.
  * @param   dir Direction.
+ * @return
  *      - STM_OK:       Success.
  *      - Others:       Fail.
  */
@@ -74,6 +75,7 @@ stm_err_t stepmotor_toggle_dir(stepmotor_handle_t handle);
  * @brief   Set step motor frequency.
  * @param   handle Handle structure.
  * @param   freq_hz Frequency in Hz.
+ * @return
  *      - STM_OK:       Success.
  *      - Others:       Fail.
  */
@@ -83,6 +85,7 @@ stm_err_t stepmotor_set_pwm_freq(stepmotor_handle_t handle, uint32_t freq_hz);
  * @brief   Set pwm duty cycle.
  * @param   handle Handle structure.
  * @param   duty Duty cycle in %.
+ * @return
  *      - STM_OK:       Success.
  *      - Others:       Fail.
  */
@@ -91,6 +94,7 @@ stm_err_t stepmotor_set_pwm_duty(stepmotor_handle_t handle, uint8_t duty);
 /*
  * @brief   Start step motor.
  * @param   handle Handle structure.
+ * @return
  *      - STM_OK:       Success.
  *      - Others:       Fail.
  */
@@ -99,10 +103,18 @@ stm_err_t stepmotor_start(stepmotor_handle_t handle);
 /*
  * @brief   Stop step motor.
  * @param   handle Handle structure.
+ * @return
  *      - STM_OK:       Success.
  *      - Others:       Fail.
  */
 stm_err_t stepmotor_stop(stepmotor_handle_t handle);
+
+/*
+ * @brief   Destroy handle structure.
+ * @param   handle Handle structure.
+ * @return	None.
+ */
+void stepmotor_destroy(stepmotor_handle_t handle);
 
 #ifdef __cplusplus
 }
