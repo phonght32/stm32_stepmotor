@@ -202,5 +202,5 @@ stm_err_t stepmotor_stop(stepmotor_handle_t handle)
 
 void stepmotor_destroy(stepmotor_handle_t handle)
 {
-    free(handle);
+    _step_motor_cleanup(handle);
 }
